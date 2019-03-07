@@ -33,21 +33,20 @@ class BookController extends Controller
 
     public function update(Request $request, Book $book) 
     {
-        if (isset($book)) 
-        {
-            $book->update($request->all());
-            return json_encode($book);
-        }
-        return response('Book not found', 404);
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+            'author_id' => 'required'
+        ]);
+
+        $book->update($data);
+
+        return $book;
     }
 
     public function destroy(Book $book) 
     {
-        if (isset($book)) 
-        {
-            $book->delete();
-            return response('OK', 200);
-        }
-        return response('Book not found', 404);
+        $book->delete();
+
+        return response()->json(null, 204);
     }
 }

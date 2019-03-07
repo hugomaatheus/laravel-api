@@ -14,7 +14,6 @@ class CreateAuthorsTable extends Migration
             $table->string('name');
             $table->integer('age');
             $table->string('email');
-            $table->string('password');
             $table->timestamps();
         });
     }

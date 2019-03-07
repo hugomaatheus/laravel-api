@@ -24,13 +24,9 @@ class AuthorController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'age' => 'required',
-            'email' => 'required|email|unique:authors,email',
-            'password' => 'confirmed|string|min:8',
-            'password_confirmation' => 'required|string|min:8'
+            'age' => 'required|numeric|min:18|max:100',
+            'email' => 'required|email|unique:authors,email',            
         ]);
-
-        $data["password"] = bcrypt(request('password'));
 
         $author = Author::create($data);
 
@@ -41,17 +37,13 @@ class AuthorController extends Controller
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
-            'age' => 'required',
+            'age' => 'required|numeric|min:18|max:100',
             'email' => [
                 'required',
                 'email',
                 Rule::unique('authors')->ignore($author->id),
-            ],
-            'password' => 'confirmed|string|min:8',
-            'password_confirmation' => 'required|string|min:8'
-        ]);
-        
-        $data["password"] = bcrypt(request('password'));
+            ],            
+        ]);           
 
         $author->update($data);
 
