@@ -3,40 +3,65 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use App\Author;
 
 class AuthorController extends Controller
 {
-    public function index() {
+    public function index() 
+    {
         $authors = Author::all();
-        return $authors->toJson();
+
+        return $authors;
     }
 
-    public function show(Author $author) {
-        if(isset($author)) {
-            return json_encode($author);
-        }
-        return response('Author not found', 404);
+    public function show(Author $author) 
+    {
+        return $author;
     }
 
-    public function store(Request $request) {
-        $author = Author::create($request->all());
-        return json_encode($author);
+    public function store(Request $request) 
+    {
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'age' => 'required',
+            'email' => 'required|email|unique:authors,email',
+            'password' => 'confirmed|string|min:8',
+            'password_confirmation' => 'required|string|min:8'
+        ]);
+
+        $data["password"] = bcrypt(request('password'));
+
+        $author = Author::create($data);
+
+        return response()->json($author, 201);
     }
 
-    public function update(Request $request, Author $author) {
-        if(isset($author)) {
-            $author->update($request->all());
-            return json_encode($author);
-        }
-        return response('Author not found', 404);
+    public function update(Request $request, Author $author) 
+    {
+        $data = $request->validate([
+            'name' => 'required|string|max:255',
+            'age' => 'required',
+            'email' => [
+                'required',
+                'email',
+                Rule::unique('authors')->ignore($author->id),
+            ],
+            'password' => 'confirmed|string|min:8',
+            'password_confirmation' => 'required|string|min:8'
+        ]);
+        
+        $data["password"] = bcrypt(request('password'));
+
+        $author->update($data);
+
+        return $author;
     }
 
-    public function destroy(Author $author) {
-        if(isset($author)) {
-            $author->delete();
-            return response('OK', 200);
-        }
-        return response('Author not found', 404);
+    public function destroy(Author $author) 
+    {
+        $author->delete();
+
+        return response()->json(null, 204);
     }
 }
