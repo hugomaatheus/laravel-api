@@ -75,5 +75,5 @@ author_id `int`
 
 #### Testes
 ```
-$ vendor/bin/phpunit
+$ ./vendor/bin/phpunit
 ```
