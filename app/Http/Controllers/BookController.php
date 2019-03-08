@@ -4,19 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Book;
+use App\Http\Resources\Book as BookResource;
 
 class BookController extends Controller
 {
     public function index() 
     {
-        $books = Book::with(['author'])->get();
-
-        return $books;
+        return BookResource::collection(Book::paginate());
     }
 
     public function show(Book $book) 
     {
-        return $book;
+        return new BookResource($book);
     }
 
     public function store(Request $request) 
@@ -40,7 +39,7 @@ class BookController extends Controller
 
         $book->update($data);
 
-        return $book;
+        return new BookResource($book);
     }
 
     public function destroy(Book $book) 

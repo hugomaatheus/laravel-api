@@ -10,7 +10,7 @@ Crie o arquivo `.env` na pasta root do projeto
 APP_ENV=local
 APP_DEBUG=true
 
-DB_CONNECTION=SeuSGBD
+DB_CONNECTION=sqlite
 
 ```
 
@@ -21,11 +21,6 @@ $ php artisan key:generate
 #### Dependências
 ```
 $ composer install
-```
-
-#### Migrações do banco
-```
-$ php artisan migrate --seed
 ```
 
 #### Inicializar server
@@ -57,8 +52,19 @@ id `int`
 name `string`
 age `int`
 email `string`
-password `string`
-password_confirmation `string`
+
+#### Inserir livro
+```
+POST api/books
+```
+
+#### Atualizar livro
+```
+PUT|PATCH api/books/{id}
+```
+id `int`
+title `string`
+author_id `int`
 
 #### Testes
 ```

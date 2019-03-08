@@ -15,40 +15,104 @@ class AuthorTest extends TestCase
      * @return void
      */    
 
-    //testing method POST
-    public function testPost()
+    protected $authorJsonStructure  = [  
+        'id',
+        'name',
+        'age',
+        'email',                
+        'created_at',
+        'updated_at'        
+    ];
+
+    /**
+     * @test
+     */
+    public function authorShouldBeListedCorrectly()
     {
-        $author = factory(Author::class)->make();
 
-        $response = $this->json('POST', 'api/authors', $author->toArray());
+        $authors = factory(Author::class, 3)->create();
 
-        $response->assertStatus(201);
+        $this->withHeaders([
+            'Content-Type' => 'application/json', 
+            'Accept' => 'application/json'
+        ])
+            ->json('GET', route('authors.index'))
+            ->assertStatus(200)
+            ->assertJson(['data' => $authors->toArray()])
+            ->assertJsonStructure([
+                'data' => [
+                    '*' => $this->authorJsonStructure
+                ]
+            ]);          
     }
 
-    //testing method GET
-    public function testGet()
+    /**
+    * @test
+    */
+    public function authorShouldBeVisualizedCorrectly()
     {
-        $response = $this->json('GET', 'api/authors');
-
-        $response->assertStatus(200);
+        $author = factory(Author::class)->create();
+        
+        $this->withHeaders([
+            'Content-Type' => 'application/json', 
+            'Accept' => 'application/json'
+        ])
+            ->json('GET', route('authors.show', $author->id))
+            ->assertStatus(200)
+            ->assertJson(['data' => $author->toArray()])
+            ->assertJsonStructure(['data' => $this->authorJsonStructure]);
     }
 
-    //testing method PUT
-    public function testPut() 
+    /**
+    * @test
+    */
+    public function authorShouldBeUpdatedCorrectly()
     {
-        $author = factory(Author::class)->make();
+        $name = 'Michael Jordan';
 
-        $response = $this->json('PUT', 'api/authors/1', $author->toArray());
+        $author = factory(Author::class)->create();
 
-        $response->assertStatus(200);
+        $author->name = $name;
+
+        $this->withHeaders([
+            'Content-Type' => 'application/json', 
+            'Accept' => 'application/json'
+        ])
+            ->json('PUT', route('authors.update', $author->id), $author->toArray())
+            ->assertStatus(200)
+            ->assertJson(['data' => ['name' => $name]])
+            ->assertJsonStructure(['data' => $this->authorJsonStructure]);
+        $this->assertDatabaseHas('authors', [
+            'id' => $author->id,
+            'name' => $name
+        ]);
     }
 
-    //testing method DELETE
-    public function testDelete()
+    /**
+    * @test
+    */
+    public function authorShouldBeDeletedCorrectly()
     {
-        $response = $this->json('DELETE', 'api/authors/1');
+        $author = factory(Author::class)->create();
 
-        $response->assertStatus(204);
+        $this->json('DELETE', route('authors.destroy', $author->id))
+            ->assertStatus(204);
+        $this->assertDatabaseMissing('authors', ['id' => $author->id]);
+    }
+
+    /**
+     * @test
+     */
+    public function authorShoulReturnNotFound()
+    {
+        $author = factory(Author::class)->create();
+        $this->json('DELETE', route('authors.destroy', $author->id));
+        $this->withHeaders([
+            'Content-Type' => 'application/json', 
+            'Accept' => 'application/json'
+        ])
+            ->json('GET', route('authors.show', $author->id))
+            ->assertStatus(404);
     }
 
 }

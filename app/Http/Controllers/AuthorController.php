@@ -5,19 +5,18 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use App\Author;
+use App\Http\Resources\Author as AuthorResource;
 
 class AuthorController extends Controller
 {
     public function index() 
     {
-        $authors = Author::all();
-
-        return $authors;
+        return AuthorResource::collection(Author::paginate());
     }
 
     public function show(Author $author) 
     {
-        return $author;
+        return new AuthorResource($author);
     }
 
     public function store(Request $request) 
@@ -47,7 +46,7 @@ class AuthorController extends Controller
 
         $author->update($data);
 
-        return $author;
+        return new AuthorResource($author);
     }
 
     public function destroy(Author $author) 
