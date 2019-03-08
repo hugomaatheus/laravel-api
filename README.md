@@ -23,6 +23,11 @@ $ php artisan key:generate
 $ composer install
 ```
 
+#### Inicializar database
+```
+$ php artisan migrate
+```
+
 #### Inicializar server
 ```
 $ php artisan serve
