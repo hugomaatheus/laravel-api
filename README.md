@@ -43,6 +43,10 @@ Content-Type application/json
 ```
 POST api/authors
 ```
+id `int`
+name `string`
+age `int`
+email `string`
 
 #### Atualizar autor
 ```
@@ -57,6 +61,9 @@ email `string`
 ```
 POST api/books
 ```
+id `int`
+title `string`
+author_id `int`
 
 #### Atualizar livro
 ```
