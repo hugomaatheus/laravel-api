@@ -29,7 +29,9 @@ class AuthorController extends Controller
 
         $author = Author::create($data);
 
-        return response()->json($author, 201);
+        return (new AuthorResource($author))
+            ->response()
+            ->setStatusCode(201);
     }
 
     public function update(Request $request, Author $author) 
