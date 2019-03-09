@@ -29,7 +29,6 @@ class AuthorTest extends TestCase
      */
     public function authorShouldBeListedCorrectly()
     {
-
         $authors = factory(Author::class, 3)->create();
 
         $this->withHeaders([
@@ -69,9 +68,7 @@ class AuthorTest extends TestCase
     public function authorShouldBeUpdatedCorrectly()
     {
         $name = 'Michael Jordan';
-
         $author = factory(Author::class)->create();
-
         $author->name = $name;
 
         $this->withHeaders([
@@ -106,7 +103,7 @@ class AuthorTest extends TestCase
     public function authorShoulReturnNotFound()
     {
         $author = factory(Author::class)->create();
-        
+
         $this->json('DELETE', route('authors.destroy', $author->id));
         $this->withHeaders([
             'Content-Type' => 'application/json', 

@@ -68,9 +68,7 @@ class BookTest extends TestCase
     public function bookShouldBeUpdatedCorrectly()
     {
         $title = 'Song of Fire and Ice';
-
         $book = factory(Book::class)->create();
-
         $book->title = $title;
 
         $this->withHeaders([
@@ -105,7 +103,7 @@ class BookTest extends TestCase
     public function bookShoulReturnNotFound()
     {
         $book = factory(Book::class)->create();
-        
+
         $this->json('DELETE', route('books.destroy', $book->id));
         $this->withHeaders([
             'Content-Type' => 'application/json', 
