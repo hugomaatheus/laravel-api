@@ -106,6 +106,7 @@ class AuthorTest extends TestCase
     public function authorShoulReturnNotFound()
     {
         $author = factory(Author::class)->create();
+        
         $this->json('DELETE', route('authors.destroy', $author->id));
         $this->withHeaders([
             'Content-Type' => 'application/json', 
