@@ -27,7 +27,9 @@ class BookController extends Controller
 
         $book = Book::create($data);
 
-        return response()->json($book, 201);
+        return (new BookResource($book))
+            ->response()
+            ->setStatusCode(201);
     }
 
     public function update(Request $request, Book $book) 
